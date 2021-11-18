@@ -151,6 +151,8 @@ export type IconRecord = {
     iconSize: number;
 };
 
+export const editorStyles: string;
+
 export class RichEditor extends React.Component<RichEditorProps> {
     // Public API
 
