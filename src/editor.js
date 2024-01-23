@@ -542,14 +542,20 @@ function createHTML(options = {}) {
             function handleKeyup(event){
                 enterStatus = 0;
                 _keyDown = false;
-                handleMention(event);
+                //NOTE: 50 is keyCode of "@"
+                if (event.keyCode === 50 || event.data == "@"){
+                    handleMention(event);
+                }
                 if (event.keyCode === 8) handleSelecting (event);
                 ${keyUpListener} && postKeyAction(event, "CONTENT_KEYUP")
             }
             function handleKeydown(event){
                 _keyDown = true;
                  handleState();
-                 handleMention(event);
+                 //NOTE: 50 is keyCode of "@"
+                 if (event.keyCode === 50 || event.data == "@"){
+                     handleMention(event);
+                 }
                 if (event.key === 'Enter'){
                     enterStatus = 1; // set enter true
                     var box;
