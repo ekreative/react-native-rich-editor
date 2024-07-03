@@ -481,9 +481,25 @@ function createHTML(options = {}) {
             content.autocomplete = 'off';
             content.className = "pell-content";
 
+            function isAndroid() {
+                if (typeof navigator !== 'undefined') {
+                    const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+                    if (/android/i.test(userAgent)) {
+                        return true;
+                    } else if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+                        return false;
+                    }
+                }
+
+                return false;
+            }
+
             let isMention = false;
+
             content.oninput = function (_ref) {
-                if (_ref.inputType === "deleteContentBackward" || !_ref.inputType) {
+                //NOTE: process the backspace key only on the android platform
+                if (_ref.inputType === "deleteContentBackward" || !_ref.inputType && isAndroid()) {
                     handleBackspace();
                     return;
                 }
