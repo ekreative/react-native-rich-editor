@@ -480,28 +480,17 @@ function createHTML(options = {}) {
             content.autocorrect = ${autoCorrect};
             content.autocomplete = 'off';
             content.className = "pell-content";
-
-            let isMention = false;
             content.oninput = function (_ref) {
-                if (_ref.inputType === "deleteContentBackward" || !_ref.inputType) {
-                    handleBackspace();
-                    return;
-                }
-
-                if (_ref.data === "@") {
-                    isMention = true;
-                }
-
-                if ((anchorNode === void 0 || anchorNode === content) &&
-                    queryCommandValue(formatBlock) === '') {
-                    if (!compositionStatus && !isMention) {
+                // var firstChild = _ref.target.firstChild;
+                if ((anchorNode === void 0 || anchorNode === content) && queryCommandValue(formatBlock) === ''){
+                    if ( !compositionStatus ){
                         formatParagraph(true);
                         paragraphStatus = 0;
                     } else {
                         paragraphStatus = 1;
                     }
-                } else if (content.innerHTML === '<br>') {
-                    content.innerHTML = '';
+                } else if (content.innerHTML === '<br>'){
+                     content.innerHTML = '';
                 } else if (enterStatus && queryCommandValue(formatBlock) === 'blockquote') {
                     formatParagraph();
                 }
@@ -510,31 +499,7 @@ function createHTML(options = {}) {
                 handleChange(_ref);
                 settings.onChange();
                 ${inputListener} && postAction({type: "ON_INPUT", data: {inputType: _ref.inputType, data: _ref.data}});
-
-                isMention = false;
             };
-
-            function handleBackspace() {
-                const selection = window.getSelection();
-                const range = selection.getRangeAt(0);
-                const startContainer = range.startContainer;
-                const startOffset = range.startOffset;
-
-                //NOTE: Check if the cursor is at the end of a mention
-                if (startContainer.nodeType === Node.TEXT_NODE && startContainer.previousSibling &&
-                    startContainer.previousSibling.classList &&
-                    startContainer.previousSibling.classList.contains('mention')) {
-                    const mentionNode = startContainer.previousSibling;
-                    mentionNode.parentNode.removeChild(mentionNode);
-                    range.setStart(startContainer, startOffset - 1);
-                    range.setEnd(startContainer, startOffset - 1);
-                    selection.removeAllRanges();
-                    selection.addRange(range);
-                } else {
-                    //NOTE: Default backspace handling
-                    document.execCommand('delete');
-                }
-            }
             appendChild(settings.element, content);
 
             if (settings.styleWithCSS) exec('styleWithCSS');
